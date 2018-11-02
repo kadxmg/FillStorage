@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="10dp"
+    tools:context=".MainActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/StorageName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/StorageName"
+            app:layout_constraintBottom_toTopOf="@+id/buttonFillStorage"
+            app:layout_constraintEnd_toEndOf="@+id/StorageSize"
+            app:layout_constraintStart_toStartOf="@+id/StorageSize"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/StorageSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/buttonFillStorage"
+            app:layout_constraintStart_toStartOf="@+id/buttonFillStorage"
+            app:layout_constraintTop_toBottomOf="@+id/StorageName" />
+
+        <Button
+            android:id="@+id/buttonFillStorage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/FillStorage"
+            app:layout_constraintBottom_toTopOf="@+id/DataName"
+            app:layout_constraintEnd_toEndOf="@+id/DataName"
+            app:layout_constraintStart_toStartOf="@+id/DataName"
+            app:layout_constraintTop_toBottomOf="@+id/StorageName" />
+
+        <TextView
+            android:id="@+id/DataName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:text="@string/DataName"
+            app:layout_constraintBottom_toTopOf="@+id/buttonFillData"
+            app:layout_constraintEnd_toEndOf="@+id/DataSize"
+            app:layout_constraintStart_toStartOf="@+id/DataSize"
+            app:layout_constraintTop_toBottomOf="@+id/buttonFillStorage" />
+
+        <TextView
+            android:id="@+id/DataSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/buttonFillData"
+            app:layout_constraintStart_toStartOf="@+id/buttonFillData"
+            app:layout_constraintTop_toBottomOf="@+id/DataName" />
+
+        <Button
+            android:id="@+id/buttonFillData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/FillData"
+            app:layout_constraintBottom_toTopOf="@+id/AllocatedName"
+            app:layout_constraintEnd_toEndOf="@+id/AllocatedName"
+            app:layout_constraintStart_toStartOf="@+id/AllocatedName"
+            app:layout_constraintTop_toBottomOf="@+id/DataName" />
+
+        <TextView
+            android:id="@+id/AllocatedName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:text="@string/AllocatedName"
+            app:layout_constraintBottom_toTopOf="@+id/buttonRestore"
+            app:layout_constraintEnd_toEndOf="@+id/AllocatedSize"
+            app:layout_constraintStart_toStartOf="@+id/AllocatedSize"
+            app:layout_constraintTop_toBottomOf="@+id/buttonFillData" />
+
+        <TextView
+            android:id="@+id/AllocatedSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/buttonRestore"
+            app:layout_constraintStart_toStartOf="@+id/buttonRestore"
+            app:layout_constraintTop_toBottomOf="@+id/AllocatedName" />
+
+        <Button
+            android:id="@+id/buttonRestore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="@string/RestoreSize"
+            app:layout_constraintBottom_toTopOf="@+id/Tips"
+            app:layout_constraintEnd_toEndOf="@+id/Tips"
+            app:layout_constraintStart_toStartOf="@+id/Tips"
+            app:layout_constraintTop_toBottomOf="@+id/AllocatedName" />
+
+        <TextView
+            android:id="@+id/Tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Tips"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonRestore" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Fill Storage</string>
+    <string name="StorageName">Internal Storage</string>
+    <string name="DataName">App Local Data</string>
+    <string name="FillStorage">Fill Storage</string>
+    <string name="FillData">Fill App Local Data</string>
+    <string name="RestoreSize">Restore Size</string>
+    <string name="AllocatedName">Allocated</string>
+    <string name="Tips">\n
+This application is not a system signature and does not occupy system reserved space.\n\n
+Step 1: Fill Internal Storage\n\n
+Step 2: Fill Local Data Storage\n\n
+Step 4: Check if the Free size is 0B (Inside the brackets is the system reserved space)\n\n
+Step 5: Fill the Local Data Storage again until the Free size is 0B\n\n
+Step 6: Reboot the Phone (The system will remove some cache as much as possible to free up space.)\n\n
+Step 7: repeat step 4. if the Free Size still 0 , these test got passed.\n\n
+    </string>
+</resources>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">空间填充测试</string>
+    <string name="StorageName">内部存储空间（/sdcard）</string>
+    <string name="DataName">应用存储空间（/data）</string>
+    <string name="FillStorage">填充内部存储空间</string>
+    <string name="FillData">填充应用存储空间</string>
+    <string name="RestoreSize">清除填充的内容</string>
+    <string name="AllocatedName">已经填充的文件大小</string>
+    <string name="Tips">\n
+本应用不是系统签名，不占用系统保留空间。\n\n
+Step 1: 填充内部存储空间\n\n
+Step 2: 填充应用存储空间\n\n
+Step 4: 检查所有的空间剩余大小是否已经是 0B （后面括号里面的是系统保留空间）\n\n
+Step 5: 继续填充应用存储空间直到你看到的剩余空间是 0B（或者非常接近） \n\n
+Step 6: 重启手机 (系统会释放自己的缓冲区来增加可用空间.)\n\n
+Step 7: 重复步骤 4.如果剩余空间依然是0B， 该测试通过.\n\n
+    </string>
+</resources>
