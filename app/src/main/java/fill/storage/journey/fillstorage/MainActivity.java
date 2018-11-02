@@ -20,25 +20,23 @@ import java.io.RandomAccessFile;
 import java.nio.file.Paths;
 
 public class MainActivity extends AppCompatActivity {
-    static final String TAG = "FillStorage";
-    static final long BYTE_IN_KB = 1024 ;
-    static final long BYTE_IN_MB = 1024 * BYTE_IN_KB;
-    static final long BYTE_IN_GB = 1024 * BYTE_IN_MB;
-    TextView mStorageSize;
-    TextView mDataSize;
-    TextView mAllocatedSize;
+    private static final String TAG = "FillStorage";
+    private static final long BYTE_IN_KB = 1024 ;
+    private static final long BYTE_IN_MB = 1024 * BYTE_IN_KB;
+    //private static final long BYTE_IN_GB = 1024 * BYTE_IN_MB;
+    private TextView mStorageSize;
+    private TextView mDataSize;
+    private TextView mAllocatedSize;
     ProgressDialog mPd;
-    UiHandler mUiHandler;
-    BgHandler mBgHandler;
+    private UiHandler mUiHandler;
+    private BgHandler mBgHandler;
 
-    HandlerThread mHandlerThread;
-
-    boolean mResumed = false;
-    private static String[] PERMISSIONS_STORAGE = {
+    private boolean mResumed = false;
+    private static final String[] PERMISSIONS_STORAGE = {
             "android.permission.WRITE_EXTERNAL_STORAGE" };
 
 
-    public void verifyStoragePermissions() {
+    private void verifyStoragePermissions() {
 
         try {
             int permission = ActivityCompat.checkSelfPermission(this,
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         mPd = new ProgressDialog(this);
         mPd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mPd.setCancelable(false);
-        mHandlerThread = new HandlerThread("bgHandlerThread");
+        HandlerThread mHandlerThread = new HandlerThread("bgHandlerThread");
         mHandlerThread.start();
         mBgHandler = new BgHandler(mHandlerThread.getLooper());
         mUiHandler = new UiHandler();
@@ -69,19 +67,19 @@ public class MainActivity extends AppCompatActivity {
         verifyStoragePermissions();
     }
 
-    void updateUiRequest() {
+    private void updateUiRequest() {
         updateUiRequest(0);
     }
-    void updateUiRequest(long delay) {
+    private void updateUiRequest(long delay) {
         mUiHandler.sendEmptyMessageDelayed(UiHandler.MSG_UPDATE,delay);
     }
 
 
-    String makeDummpFileName(File path) {
+    private String makeDummyFileName(File path) {
         return  Paths.get(path.getPath(),"bigfile").toString();
     }
-    void cleanSpace(File path) {
-        String fillSpaceFilePath = makeDummpFileName(path);
+    private void cleanSpace(File path) {
+        String fillSpaceFilePath = makeDummyFileName(path);
         File fillSpaceFile = new File(fillSpaceFilePath);
         Log.d(TAG,"try to delete a fillSpace file " + fillSpaceFile);
         if(fillSpaceFile.exists()) {
@@ -90,19 +88,18 @@ public class MainActivity extends AppCompatActivity {
         }
         updateFreeSize();
     }
-    void fillSpace(File path) {
-        long freeSpace = path.getFreeSpace();
+    private void fillSpace(File path) {
         long usableSpace = path.getUsableSpace();
-        String fillSpaceFilePath = makeDummpFileName(path);
+        String fillSpaceFilePath = makeDummyFileName(path);
         Log.d(TAG,"try to create a fillSpace file " + fillSpaceFilePath);
         try {
-            byte[] dummydata = new byte[(int) (100 * BYTE_IN_MB)];
+            byte[] dummyData = new byte[(int) (100 * BYTE_IN_MB)];
             RandomAccessFile randomFile = new RandomAccessFile(fillSpaceFilePath, "rws");
             randomFile.seek(randomFile.length());
-            mPd.setMax((int) (usableSpace / dummydata.length));
+            mPd.setMax((int) (usableSpace / dummyData.length));
             //randomFile.setLength(usableSpace);
             while(usableSpace > 0) {
-                randomFile.write(dummydata);
+                randomFile.write(dummyData);
                 mPd.incrementProgressBy(1);
                 usableSpace = path.getUsableSpace();
                 Log.i(TAG," usableSpace change to " + usableSpace + " as " + Formatter.formatFileSize(this, usableSpace));
@@ -116,18 +113,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void updateAllocatedSize() {
+    private void updateAllocatedSize() {
         long allocated = 0;
 
-        allocated += updateAllocatedSize(new File(makeDummpFileName(Environment.getExternalStorageDirectory())));
-        allocated += updateAllocatedSize(new File(makeDummpFileName(getFilesDir())));
+        allocated += updateAllocatedSize(new File(makeDummyFileName(Environment.getExternalStorageDirectory())));
+        allocated += updateAllocatedSize(new File(makeDummyFileName(getFilesDir())));
 
         String msg = Formatter.formatFileSize(this,allocated);
-        if(!msg.equals(mAllocatedSize.getText())) {
+        if(!msg.equals(mAllocatedSize.getText().toString())) {
             mAllocatedSize.setText(msg);
         }
     }
-    long updateAllocatedSize(File path) {
+    private long updateAllocatedSize(File path) {
         if(path.exists()) {
             return path.length();
         } else {
@@ -145,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         long usableSpace = path.getUsableSpace();
         long totalSpace = path.getTotalSpace();
         String msg = Formatter.formatFileSize(this,usableSpace) + " (" + Formatter.formatFileSize(this, freeSpace) + ") / " + Formatter.formatFileSize(this,totalSpace);
-        if(!msg.equals(view.getText())) {
+        if(!msg.equals(view.getText().toString())) {
             /*
             Log.i(TAG, path
                     + " freeSpace："  + Formatter.formatFileSize(this,freeSpace)
@@ -191,9 +188,9 @@ public class MainActivity extends AppCompatActivity {
         mResumed = false;
     }
     class UiHandler extends Handler {
-        static public final int MSG_UPDATE = 100;
-        static public final int MSG_PROCESS_SHOW = 101;
-        static public final int MSG_PROCESS_HIDE = 102;
+        static final int MSG_UPDATE = 100;
+        static final int MSG_PROCESS_SHOW = 101;
+        static final int MSG_PROCESS_HIDE = 102;
 
         @Override
         public void handleMessage(Message msg) {
@@ -220,11 +217,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class BgHandler extends Handler {
-        static public final int MSG_FILL_STORAGE = 100;
-        static public final int MSG_FILL_DATA = 101;
-        static public final int MSG_RESTORE_SIZE = 102;
+        static final int MSG_FILL_STORAGE = 100;
+        static final int MSG_FILL_DATA = 101;
+        static final int MSG_RESTORE_SIZE = 102;
 
-        public BgHandler (Looper looper) {
+        BgHandler(Looper looper) {
             super(looper);
         }
         void showProcess(boolean show) {
