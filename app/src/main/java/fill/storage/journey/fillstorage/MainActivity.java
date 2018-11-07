@@ -2,6 +2,7 @@ package fill.storage.journey.fillstorage;
 
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -9,7 +10,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.nio.file.Paths;
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "FillStorage";
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mStorageSize;
     private TextView mDataSize;
     private TextView mAllocatedSize;
-    ProgressDialog mPd;
+    private ProgressDialog mPd;
     private UiHandler mUiHandler;
     private BgHandler mBgHandler;
 
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         HandlerThread mHandlerThread = new HandlerThread("bgHandlerThread");
         mHandlerThread.start();
         mBgHandler = new BgHandler(mHandlerThread.getLooper());
-        mUiHandler = new UiHandler();
+        mUiHandler = new UiHandler(this);
         updateFreeSize();
         verifyStoragePermissions();
     }
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private String makeDummyFileName(File path) {
-        return  Paths.get(path.getPath(),"bigfile").toString();
+        return  path.getPath() + "/bigfile";
     }
     private void cleanSpace(File path) {
         String fillSpaceFilePath = makeDummyFileName(path);
@@ -84,7 +84,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG,"try to delete a fillSpace file " + fillSpaceFile);
         if(fillSpaceFile.exists()) {
             Log.i(TAG," file " + fillSpaceFile + " delete , and release " + Formatter.formatFileSize(this, fillSpaceFile.length()) + "");
-            fillSpaceFile.delete();
+            boolean deleted = fillSpaceFile.delete();
+            if(!deleted)
+                Log.w(TAG," file " + fillSpaceFile + " delete failed");
         }
         updateFreeSize();
     }
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         String fillSpaceFilePath = makeDummyFileName(path);
         Log.d(TAG,"try to create a fillSpace file " + fillSpaceFilePath);
         try {
-            byte[] dummyData = new byte[(int) (100 * BYTE_IN_MB)];
+            byte[] dummyData = new byte[(int) (50 * BYTE_IN_MB)];
             RandomAccessFile randomFile = new RandomAccessFile(fillSpaceFilePath, "rws");
             randomFile.seek(randomFile.length());
             mPd.setMax((int) (usableSpace / dummyData.length));
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 mPd.incrementProgressBy(1);
                 usableSpace = path.getUsableSpace();
                 Log.i(TAG," usableSpace change to " + usableSpace + " as " + Formatter.formatFileSize(this, usableSpace));
+                updateUiRequest();
             }
             Log.i(TAG,fillSpaceFilePath + " length change to " + randomFile.length() + " as " + Formatter.formatFileSize(this, randomFile.length()));
             randomFile.close();
@@ -132,12 +135,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void updateFreeSize() {
+    private void updateFreeSize() {
         updateFreeSize(Environment.getExternalStorageDirectory(),mStorageSize);
         updateFreeSize(getFilesDir(),mDataSize);
     }
 
-    void updateFreeSize(File path,TextView view) {
+    private void updateFreeSize(File path,TextView view) {
         long freeSpace = path.getFreeSpace();
         long usableSpace = path.getUsableSpace();
         long totalSpace = path.getTotalSpace();
@@ -187,28 +190,34 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         mResumed = false;
     }
-    class UiHandler extends Handler {
+    static class UiHandler extends Handler {
+        private final WeakReference<MainActivity> _this;
         static final int MSG_UPDATE = 100;
         static final int MSG_PROCESS_SHOW = 101;
         static final int MSG_PROCESS_HIDE = 102;
+
+        UiHandler(MainActivity activity) {
+            super();
+            _this = new WeakReference<>(activity);
+        }
 
         @Override
         public void handleMessage(Message msg) {
             removeMessages(msg.what);
             switch(msg.what) {
                 case MSG_UPDATE:
-                    if(mResumed) {
-                        updateFreeSize();
-                        updateAllocatedSize();
-                        updateUiRequest(10*1000);
+                    if(_this.get().mResumed) {
+                        _this.get().updateFreeSize();
+                        _this.get().updateAllocatedSize();
+                        _this.get().updateUiRequest(10*1000);
                     }
                     break;
                 case MSG_PROCESS_SHOW:
-                    mPd.show();
+                    _this.get().mPd.show();
                     break;
                 case MSG_PROCESS_HIDE:
-                    updateUiRequest();
-                    mPd.hide();
+                    _this.get().updateUiRequest();
+                    _this.get().mPd.hide();
                     break;
                 default:
                     break;
